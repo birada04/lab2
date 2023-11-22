@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="card">
+        <div class="header">
+          <h1>Weather App</h1>
+        </div>
+        <div class="content">
+          <form id="weatherForm">
+            <label for="cityInput">Enter City:</label>
+            <input type="text" id="cityInput" placeholder="Chicago" />
+            <button type="submit">Get Weather</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="header">
+          <h2>Weather Result</h2>
+        </div>
+        <div class="content" id="weatherResult"></div>
+      </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+      document
+        .getElementById("weatherForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const city = document.getElementById("cityInput").value;
+
+          try {
+            const response = await fetch(`/weather?city=${city}`);
+            const data = await response.json();
+
+            const weatherResult = document.getElementById("weatherResult");
+            if (data.error) {
+              weatherResult.innerHTML = `<div class="alert alert-danger">${data.error.message}</div>`;
+            } else {
+              weatherResult.innerHTML = `
+                        <div class="alert alert-success">
+                            <h4>${data.name}, ${data.sys.country}</h4>
+                            <p>Temperature: ${data.main.temp}°C</p>
+                            <p>Weather: ${data.weather[0].description}</p>
+                        </div>
+                    `;
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        });
+    </script>
+  </body>
+</html>
